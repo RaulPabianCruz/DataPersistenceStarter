@@ -11,6 +11,7 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text HighScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -36,6 +37,9 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        HighScoreText.text = $"Best Score : {ScoreDataManager.Instance.highscoreName}" +
+            $" : {ScoreDataManager.Instance.highscore}";
     }
 
     private void Update()
@@ -72,5 +76,21 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+
+        if (m_Points > ScoreDataManager.Instance.highscore)
+        {
+            RecordNewHighScore();
+        }
+    }
+
+    private void RecordNewHighScore()
+    {
+        //this is where it serializes and where the UI is changed
+        //for session persistence as well
+        ScoreDataManager.Instance.highscore = m_Points;
+        ScoreDataManager.Instance.highscoreName = ScoreDataManager.Instance.playerName;
+
+        HighScoreText.text = $"Best Score : {ScoreDataManager.Instance.highscoreName}" +
+            $" : {ScoreDataManager.Instance.highscore}";
     }
 }
