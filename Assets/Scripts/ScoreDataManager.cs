@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class ScoreDataManager : MonoBehaviour
 {
@@ -9,6 +10,13 @@ public class ScoreDataManager : MonoBehaviour
     public string playerName = "Player1";
     public string highscoreName = "";
     public int highscore = 0;
+
+    [System.Serializable]
+    class SaveData
+    {
+        public string highscoreName;
+        public int highscore;
+    }
 
     private void Awake()
     {
@@ -22,11 +30,32 @@ public class ScoreDataManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(Instance);
+
+        LoadHighScore();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SaveHighScore()
     {
-        
+        SaveData data = new SaveData();
+        data.highscoreName = highscoreName;
+        data.highscore = highscore;
+
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+
+    public void LoadHighScore()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            highscoreName = data.highscoreName;
+            highscore = data.highscore;
+        }
     }
 }

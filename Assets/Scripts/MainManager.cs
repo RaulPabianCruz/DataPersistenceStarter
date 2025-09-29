@@ -38,8 +38,10 @@ public class MainManager : MonoBehaviour
             }
         }
 
-        HighScoreText.text = $"Best Score : {ScoreDataManager.Instance.highscoreName}" +
-            $" : {ScoreDataManager.Instance.highscore}";
+        if(ScoreDataManager.Instance != null)
+        {
+            DisplayHighScore();
+        }
     }
 
     private void Update()
@@ -77,7 +79,8 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
 
-        if (m_Points > ScoreDataManager.Instance.highscore)
+        if (ScoreDataManager.Instance != null && 
+                m_Points > ScoreDataManager.Instance.highscore)
         {
             RecordNewHighScore();
         }
@@ -85,11 +88,16 @@ public class MainManager : MonoBehaviour
 
     private void RecordNewHighScore()
     {
-        //this is where it serializes and where the UI is changed
-        //for session persistence as well
         ScoreDataManager.Instance.highscore = m_Points;
         ScoreDataManager.Instance.highscoreName = ScoreDataManager.Instance.playerName;
 
+        DisplayHighScore();
+
+        ScoreDataManager.Instance.SaveHighScore();
+    }
+
+    private void DisplayHighScore()
+    {
         HighScoreText.text = $"Best Score : {ScoreDataManager.Instance.highscoreName}" +
             $" : {ScoreDataManager.Instance.highscore}";
     }

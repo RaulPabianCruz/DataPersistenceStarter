@@ -11,8 +11,9 @@ using UnityEditor;
 public class MenuUIManager : MonoBehaviour
 {
     public GameObject inputGameObj;
-    public TextMeshProUGUI highscoreText;
     private TMP_InputField inputField;
+
+    public TextMeshProUGUI highscoreText;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,11 +22,15 @@ public class MenuUIManager : MonoBehaviour
 
     public void StartNew()
     {
-        if (!string.IsNullOrEmpty(inputField.text))
+        if (!string.IsNullOrWhiteSpace(inputField.text))
         {
             ScoreDataManager.Instance.playerName = inputField.text;
         }
-        SceneManager.LoadScene(1);
+        else
+        {
+            ScoreDataManager.Instance.playerName = "Player1";
+        }
+            SceneManager.LoadScene(1);
     }
 
     public void DisplayHighScoreText()
